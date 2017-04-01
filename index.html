@@ -1,0 +1,170 @@
+<html>
+
+<head>
+
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+
+    <link rel="stylesheet" href="libs/Pikaday/css/pikaday.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body background="images/login_wallpaper.png">
+    <!--Load Jquery - if not able to get from CDN then load it locally-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+        !window.jQuery && document.write('<script src="libs/jquery/jquery-2.1.1.min.js"><\/script>')
+    </script>
+    <!--Load Materialize-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <script>
+        !window.Materialize && document.write('<script src="libs/materialize/dist/js/materialize.min.js"><\/script>')
+    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.js"></script>
+    <script src="libs/Pikaday/pikaday.js"></script>
+    <div class="row">
+        <div class="col s12 m6 offset-m3" style="margin-top:2%">
+            <div class="card card-large">
+                <div class="card-image">
+                    <img src="images/login_card_head.png" height="20%">
+                    <span class="card-title">lotto.io</span>
+                </div>
+                <div class="card-content" style="padding-bottom:65%">
+                    <form id="login_form" class="col s12" onsubmit="return false">
+                        <div class="row">
+                            <div class="input-field">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input id="name" name="name" type="text" class="validate" required="">
+                                <label for="name" data-error="Please enter name">Name</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field">
+                                <i class="material-icons prefix">email</i>
+                                <input id="email" name="email" type="email" class="validate" required="">
+                                <label for="email" data-error="Incorrect Email Format">Email</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field">
+                                <i class="material-icons prefix">phone</i>
+                                <input id="phone" name="phone" type="text" class="validate" required="">
+                                <label for="phone" data-error="Please enter phone number">Phone</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field">
+                                <i class="material-icons prefix">android</i>
+                                <div class="col m11 offset-m1">
+                                    <select id="gender" class="browser-default">
+                                    <option value="g" disabled selected>Gender</option>
+                                    <option value="m">Male</option>
+                                    <option value="f">Female</option>
+                                    <option value="n">Not Specified</option>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field">
+                                <i class="material-icons prefix">today</i>
+                                <input type="text" name="datepickerDOB" id="datepickerDOB" class="validate" required="">
+                                <label for="datepickerDOB" data-error="Please enter DOB">DOB</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field">
+                                <i class="material-icons prefix">lock</i>
+                                <input id="password" name="password" type="password" required="">
+                                <label for="password" data-error="Password is required">Password</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field">
+                                <i class="material-icons prefix">lock</i>
+                                <input id="cpassword" name="cpassword" type="password" class="validate" required="" maxlength="40">
+                                <label for="cpassword" data-error="Password is required">Confirm Password</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-action">
+                    <button onclick="register()" class="waves-effect waves-light btn" form="login_form">Enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var picker = new Pikaday({
+            field: document.getElementById('datepickerDOB'),
+            format: 'D MMM YYYY',
+            onSelect: function () {
+                _fromDate = this.getMoment().format('YYYY-MM-DD');
+            }
+        });
+        /*
+          Takes email and password then does a query with the database to see if user account exist
+          If successful a 1 is returned - if not 0 - we will store the email and dev_id in a
+          cookie which will be used in the other parts of the website
+        */
+        function register() {
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var phone = document.getElementById("phone").value;
+            var gender = document.getElementById("gender");
+            var selectedGender = gender.options[gender.selectedIndex].value;
+            var dob = document.getElementById("datepickerDOB").value;
+            var password = document.getElementById("password").value;
+            var cpassword = document.getElementById("cpassword").value;
+            var form = document.getElementById("login_form");
+            if (selectedGender == "g") return Materialize.toast('Please select gender', 4000);
+            if (password != cpassword) return Materialize.toast('Passwords do not match', 4000);
+            if (form.checkValidity() != false) {
+                createCookie("userdata", JSON.stringify({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    gender: selectedGender,
+                    dob: dob
+                }));
+                console.log(JSON.parse(getCookie("userdata")));
+                document.location = "views/main.html"
+            }
+        }
+        /*
+          Method used to create a cookie - expiration date is optional
+        */
+        var createCookie = function (name, value, days) {
+            var expires;
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+            } else {
+                expires = "";
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end == -1) {
+                        c_end = document.cookie.length;
+                    }
+                    return unescape(document.cookie.substring(c_start, c_end));
+                }
+            }
+            return "";
+        }
+    </script>
+</body>
+
+</html>
