@@ -1,0 +1,282 @@
+<html>
+
+<head>
+    <title>Main</title>
+
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link type="text/css" rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+    <!--Load Jquery - if not able to get from CDN then load it locally-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+        !window.jQuery && document.write('<script src="../libs/jquery/jquery-2.1.1.min.js"><\/script>')
+    </script>
+    <!--Load Materialize-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <script>
+        !window.Materialize && document.write('<script src="../libs/materialize/dist/js/materialize.min.js"><\/script>')
+    </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.5.8/JsBarcode.all.min.js"></script>
+
+    <!--Main Nav Bar-->
+    <div id="barcodeReceipt" class="modal">
+        <div class="modal-content">
+            <h4>Ticket Purchased</h4>
+            <div class="row">
+                <div class="col m4 offset-m3">
+                    <img id="barcode" class="img-circle-md">
+                </div>
+            </div>
+            <p>Your lotto ticket has been purchased, please scan the above barcode</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class=" modal-action modal-close waves-effect waves-green btn-flat">Done</a>
+        </div>
+    </div>
+    <div id="emailReceipt" class="modal">
+        <div class="modal-content">
+            <h4>Purchase</h4>
+            <p>Your lotto ticket has been purchased and a receipt is sent to your email</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m3">
+            <div class="row">
+                <div class="col s12 m12">
+                    <span id="clock"></span>
+                    <p><a href="selfie.html">Take Selfie</a></p>
+                    <!--4:12pm-->
+                </div>    
+            </div>
+        </div>
+        <div class="col s12 m4" style="padding-left: 10%">
+            <iframe scrolling="no" frameBorder="0" src="https://feed.mikle.com/widget/v2/14053/" width="120%" height="25%"></iframe>
+        </div>
+        <div class="col s12 offset-m5" style="margin-top: -10%">
+            <div id="cont_28f9e216ae6ea94728158e0433864bb4">
+                <script type="text/javascript" async src="https://www.theweather.com/wid_loader/28f9e216ae6ea94728158e0433864bb4"></script>
+            </div>
+        </div>
+    </div>
+    <p></p>
+    <ul id="tabs-swipe-demo" class="tabs">
+        <li class="tab col s3"><a href="#purchase-swipe-1">Purchase Ticket</a></li>
+        <li class="tab col s3"><a class="active" href="#result-swipe-2">Lotto Result</a></li>
+        <li class="tab col s3"><a href="#lucky-swipe-3">I'm feeling lucky</a></li>
+    </ul>
+    <div id="purchase-swipe-1" class="col s12 m12">
+        <div class="row" style="margin-top:1%">
+            <div class="col s12 m6 offset-m2">
+                <div class="card card-large">
+                    <div class="card-content">
+                        <form id="article_form" class="col s12" onsubmit="return false">
+                            <div class="row">
+                                <div class="input-field col s4">
+                                    <label>Lotto#</label>
+                                </div>
+                                <div class="input-field col s8">
+                                    <input id="lotto" name="lotto" type="text" required="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s4">
+                                    <label>Account#</label>
+                                </div>
+                                <div class="input-field col s8">
+                                    <input id="article_title" name="article_title" type="text" value="123-456-789" maxlength="120" disabled="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s4">
+                                    <label>Send Receipt to</label>
+                                </div>
+                                <div class="input-field col s8">
+                                    <select id="receipt" class="browser-default">
+                                        <option value="b" selected>Barcode</option>   
+                                        <option value="e">Email</option>
+                                </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row" style="padding-bottom:2%">
+                        <div class="input-field col s12 offset-s8">
+                            <button onclick="purchaseTicket()" class="waves-effect waves-light btn-large" form="article_form">Buy Ticket</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="result-swipe-2" class="col s12">
+        <div class="row">
+            <div class="col s12 m8 offset-m4" style="padding-left: 3%">
+                <img src="../images/lottoresult.png" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m8 offset-m4">
+                <img src="../images/lottoresult2.png" />
+            </div>
+        </div>
+    </div>
+    <div id="lucky-swipe-3" class="col s12">
+        <div class="row">
+            <div class="col s12 m8 offset-m4">
+                <h1>
+                    <bold id="luckyNumber">41-12-12-12-12
+                    </bold>
+                </h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m8 offset-m5">
+                <button onclick="buyNumber()" class="waves-effect waves-light btn-large">Buy This Number</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var userObj = JSON.parse(getCookie("userdata"));
+
+        (function () {
+            var clockElement = document.getElementById("clock");
+
+            function updateClock(clock) {
+                clock.innerHTML = "<h4><bold>" + new Date().toLocaleTimeString() + "</bold></h4>";
+            }
+            setInterval(function () {
+                updateClock(clockElement);
+            }, 1000);
+        }());
+
+        function buyNumber() {
+            $('ul.tabs').tabs('select_tab', 'purchase-swipe-1');
+            $('#lotto').val($('#luckyNumber').html());
+        }
+
+        function purchaseTicket() {
+            if(!$('#lotto').val()) return;
+            var receiptOption = document.getElementById("receipt");
+            var selectedreceiptOption = receiptOption.options[receiptOption.selectedIndex].value;
+            if(selectedreceiptOption == "b"){
+                $("#barcodeReceipt").openModal();
+                console.log($('#lotto').val());
+                JsBarcode("#barcode", "lotto#:"+$('#lotto').val(), {
+                    displayValue: false
+                });
+            } else if(selectedreceiptOption == "e"){
+                 $.ajax({
+                    type: "POST",
+                    data: "lotto=" + $('#lotto').val(),
+                    url: "../php/sendEmail.php",
+                    success: function (res) {
+                        console.log(res);
+                    },
+                    error: function (err) {
+                        console.log("ERR: " + JSON.stringify(err));
+                    }
+                });
+                 $("#emailReceipt").openModal();
+            }
+        }
+
+        function enableProject() {
+            var email = document.getElementById("email");
+            var dev_id = document.getElementById("dev_id");
+            $("#enableAPIModal").openModal();
+            email.value = cookemail;
+            dev_id.value = "Developer ID : " + cookdev;
+        }
+        /*
+          Stores project information to database and closes the modal box
+        */
+        function registerProject() {
+            var project_name = document.getElementById("project_name");
+            var descript = document.getElementById("descript");
+            if (project_name.value == "" || descript.value == "") {
+                Materialize.toast('Project name or description cannot be empty', 6000);
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "../php/db_RegisterProject.php",
+                    dataType: "json",
+                    data: "dev_id=" + cookdev + "&descript=" + descript.value + "&project_name=" + project_name
+                        .value,
+                    success: function (res) {
+                        if (res.response == 1) {
+                            Materialize.toast('API registration SUCCESSFUL', 6000);
+                        } else if (res.response == 0) {
+                            Materialize.toast('API registration FAILED', 6000);
+                        } else if (res.response == -1) {
+                            alert(res.message);
+                        }
+                        $("#enableAPIModal").closeModal();
+                    },
+                    error: function (err) {
+                        alert("ERR: " + JSON.stringify(err));
+                        Materialize.toast('API registration FAILED', 6000);
+                        $("#enableAPIModal").closeModal();
+                    }
+                });
+            }
+        }
+        /*
+          Method used to create a cookie - expiration date is optional
+        */
+        var createCookie = function (name, value, days) {
+            var expires;
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+            } else {
+                expires = "";
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+        /*
+          Method used to retrieve the cookie
+        */
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end == -1) {
+                        c_end = document.cookie.length;
+                    }
+                    return unescape(document.cookie.substring(c_start, c_end));
+                }
+            }
+            return "";
+        }
+        /*
+          Method to delete cookie - overwrite the cookie value to empty and set expiration date to yesterday
+        */
+        function deleteCookie(name) {
+            createCookie(name, "", -1);
+        }
+        /*
+          expires user email and dev_id in the cookie when they log out
+        */
+        function logout() {
+            //Expire it
+            deleteCookie("email");
+            deleteCookie("dev_id");
+            window.location = "../index.html";
+        }
+    </script>
+</body>
+
+</html>

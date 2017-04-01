@@ -1,0 +1,650 @@
+<html>
+
+<head>
+    <title>Analytics</title>
+
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+
+    <link rel="stylesheet" href="../libs/Pikaday/css/pikaday.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link type="text/css" rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+    <!--Load Jquery - if not able to get from CDN then load it locally-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+        !window.jQuery && document.write('<script src="../libs/jquery/jquery-2.1.1.min.js"><\/script>')
+    </script>
+    <!--Load Materialize-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <script>
+        !window.Materialize && document.write('<script src="../libs/materialize/dist/js/materialize.min.js"><\/script>')
+    </script>
+    <!-- Load D3 -->
+    <script src="http://d3js.org/d3.v3.js"></script>
+    <script>
+        !window.d3 && document.write('<script src="../libs/d3/d3.min.js"><\/script>')
+    </script>
+    <!--Load D3-Tip -->
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script>
+        !window.d3.tip && document.write('<script src="../libs/d3-tip/index.js"><\/script>')
+    </script>
+    <!-- Load Pikaday & Moment js -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.js"></script>
+    <script src="../libs/Pikaday/pikaday.js"></script>
+
+    <!--Main Nav Bar-->
+    <nav class="lime amber accent-4">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo"><img src="../images/main_nav_icon.png" class="img-circle-sm"></img>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li>
+                    <a class="dropdown-button btn blue darken-3" href="#" data-activates="userOptions">
+                        <div id="userName">Welcome User</div>
+                    </a>
+                </li>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="projects.html"><i class="material-icons right">work</i>Projects</a></li>
+                <li><a href="keys.html"><i class="material-icons right">vpn_key</i>API Keys</a></li>
+                <li class="active"><a href="analytics.html"><i class="material-icons right">insert_chart</i>Analytics</a></li>
+            </ul>
+
+            <ul id="userOptions" class="dropdown-content">
+                <li><a href="#!">Edit Account</a></li>
+                <li class="divider"></li>
+                <li><a type="button" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Bar Chart Section -->
+    <div class="row">
+        <div class="input-field col m2">
+            <select id="project_id" class="browser-default">
+                <option value="" disabled selected>Project ID</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" style="margin-top:2%">
+        <div class="input-field col m1">
+            <label>Filter By :</label>
+        </div>
+        <div class="input-field col m2">
+            <select id="barchart_filterBy" class="browser-default">
+                <option value="totSignUp" selected>Total Daily Sign Ups</option>
+                <option value="totDailyUser">Total Daily Users</option>
+            </select>
+        </div>
+
+        <div class="input-field col m1">
+            <input type="text" id="datepickerFrom">
+        </div>
+        <div class="input-field col m1">
+            <input type="text" id="datepickerTo">
+        </div>
+        <div class="input-field col m1">
+            <button onclick="doQueryBarChart()" class="waves-effect waves-light btn">Go</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col m11 offset-m1">
+            <div id="barChartRegion"></div>
+        </div>
+    </div>
+    <!-- Calendar Section -->
+    <div class="row" style="margin-top:1%">
+        <div class="col s12 m12">
+            <div class="row">
+                <div class="input-field col m1">
+                    <label>Filter By :</label>
+                </div>
+                <div class="input-field col m2">
+                    <select id="filterBy" class="browser-default" onchange="selectedFilter()">
+                        <option value="totSignUp" selected>Total Daily Sign Ups</option>
+                        <option value="totDailyUser">Total Daily Users</option>
+                        <option value="totSignUpRegion">Total Sign Ups by Region</option>
+                        <option value="totDailyUserRegion">Total Daily Users by Region</option>
+                    </select>
+                </div>
+                <div id="region" class="input-field col m1">
+                    <label>Region :</label>
+                </div>
+                <div class="input-field col m2">
+                    <select id="area_code" class="browser-default">
+                        <option value="1876" selected>Jamaica (1876)</option>
+                        <option value="1264">Anguilla (1264)</option>
+                        <option value="1268">Antigua (1268)</option>
+                        <option value="297">Aruba (297)</option>
+                        <option value="1284">BVI (1284)</option>
+                        <option value="1246">Barbados (1246)</option>
+                        <option value="1441">Bermuda (1441)</option>
+                        <option value="599">Bonaire (599)</option>
+                        <option value="1345">Cayman (1345)</option>
+                        <option value="1767">Dominica (1767)</option>
+                        <option value="503">El Salvador (503)</option>
+                        <option value="594">FWI-French Guiana (594)</option>
+                        <option value="590">FWI-Guadeloupe (590)</option>
+                        <option value="596">FWI-Martinique (596)</option>
+                        <option value="679">Fiji (679)</option>
+                        <option value="1473">Grenada (1473)</option>
+                        <option value="592">Guyana (592)</option>
+                        <option value="509">Haiti (509)</option>
+                        <option value="504">Honduras (504)</option>
+                        <option value="674">Nauru (674)</option>
+                        <option value="675">PNG (675)</option>
+                        <option value="507">Panama (507)</option>
+                        <option value="685">Samoa (685)</option>
+                        <option value="1869">St. Kitts (1869)</option>
+                        <option value="1758">St. Lucia (1758)</option>
+                        <option value="1784">St. Vincent (1784)</option>
+                        <option value="597">Suriname (597)</option>
+                        <option value="676">Tonga (676)</option>
+                        <option value="1868">Trinidad (1868)</option>
+                        <option value="1649">Turks + Caicos (1649)</option>
+                        <option value="678">Vanuatu (678)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col m1">
+                    <label>From :</label>
+                </div>
+                <div class="input-field col s12 m4">
+                    <select id="fromYear" class="browser-default">
+                        <option value="2010" selected>2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                    </select>
+                </div>
+                <div class="input-field col m1">
+                    <label>To :</label>
+                </div>
+                <div class="input-field col s12 m4">
+                    <select id="toYear" class="browser-default">
+                        <option value="2010">2010</option>
+                        <option value="2011">2011</option>
+                        <option value="2012">2012</option>
+                        <option value="2013">2013</option>
+                        <option value="2014">2014</option>
+                        <option value="2015">2015</option>
+                        <option value="2016" selected>2016</option>
+                    </select>
+                </div>
+                <div class="input-field col s12 m1">
+                    <button onclick="doQueryCalendar()" class="waves-effect waves-light btn">Go</button>
+                </div>
+            </div>
+
+            <div id="" style="overflow-y: scroll; height:80%;">
+                <div class="row">
+                    <div class="col m12">
+                        <div id="calendarChart" class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //Get the dev_id and email from the cookie
+        var cookemail = getCookie("email");
+        var cookdev = getCookie("dev_id");
+        //Mock data - This object stores data from a query and is used to construct the graphs
+        var _dataObj = {
+            "2015-07-15": "3" //Example of data format - won't show in graph - object's data is re-assigned on each query
+        };
+        var _fromDate = "", //Stores the start and end date from the calendar selection so that a query can be done
+            _toDate = "";
+        var uname = document.getElementById("userName");
+        uname.innerHTML = "Welcome " + cookemail;
+        /*
+          Hide the region label and area code drop down on start up Only show if user selects the filter by region option
+        */
+        $(document).ready(function() {
+            $("#region").hide();
+            $("#area_code").hide();
+        });
+        /*
+          Loads all the developers projects - user needs to select a project when doing a query
+        */
+        (function() {
+            $.ajax({
+                type: "POST",
+                url: "../php/db_GetProjects.php",
+                dataType: "json",
+                data: "dev_id=" + cookdev,
+                success: function(res) {
+                    if (res[0].response == 1) {
+                        for (var n = 0; n < res.length; n++) {
+                            $("#project_id").append($("<option></option>")
+                                .attr("value", res[n].pid)
+                                .text(res[n].pid));
+                        }
+                    } else if (res[0].response == 0) {
+                        Materialize.toast('You have no projects', 6000);
+                    } else if (res[0].response == -1) {
+                        alert(res[0].message);
+                    }
+                },
+                error: function(err) {
+                    alert("ERR: " + JSON.stringify(err));
+                }
+            });
+        }());
+        /*
+          Use Pikady to get the start date of the query
+        */
+        var picker = new Pikaday({
+            field: document.getElementById('datepickerFrom'),
+            format: 'D MMM YYYY',
+            onSelect: function() {
+                _fromDate = this.getMoment().format('YYYY-MM-DD');
+            }
+        });
+        /*
+          Use Pikady to get the end date of the query
+        */
+        var picker = new Pikaday({
+            field: document.getElementById('datepickerTo'),
+            format: 'D MMM YYYY',
+            onSelect: function() {
+                _toDate = this.getMoment().format('YYYY-MM-DD');
+            }
+        });
+        /*
+          If the user wants to filter by region then show the region label and area_code drop down, if not hide it
+          This function fires with an onchange event
+        */
+        function selectedFilter() {
+            var filterOptionDDL = document.getElementById("filterBy");
+            var selectedFilterOpton = filterOptionDDL.options[filterOptionDDL.selectedIndex].value;
+            if (selectedFilterOpton == "totSignUpRegion" || selectedFilterOpton == "totDailyUserRegion") {
+                $("#region").show();
+                $("#area_code").show();
+            } else {
+                $("#region").hide();
+                $("#area_code").hide();
+            }
+        };
+        /*
+          Takes the selected project, filter option(sign up, daily user etc), start and end date, and region if selected
+          Performs a query on the database based on those options and returns data that will be used to construct the
+          Calendar graph
+        */
+        function doQueryCalendar() {
+            var project_idDDL = document.getElementById("project_id");
+            var selectedProject = project_idDDL.options[project_idDDL.selectedIndex].value;
+            if (!selectedProject) return Materialize.toast('Please select a project to query', 4000);
+            var filterOptionDDL = document.getElementById("filterBy");
+            var fromYearDDL = document.getElementById("fromYear");
+            var toYearDDL = document.getElementById("toYear");
+            var selectedFilterOpton = filterOptionDDL.options[filterOptionDDL.selectedIndex].value;
+            //Add month and day stamp to year
+            var selectedFromYear = fromYearDDL.options[fromYearDDL.selectedIndex].value + "-01-01";
+            var selectedToYear = toYearDDL.options[toYearDDL.selectedIndex].value + "-12-12";
+            var selectedRegion = "";
+            //If the area code drop down is visible then find out what region the user selected
+            if ($("#area_code").is(":visible")) {
+                var area_code = document.getElementById("area_code");
+                selectedRegion = area_code.options[area_code.selectedIndex].value;
+            }
+            $.ajax({
+                type: "POST",
+                url: "../php/db_Analytics.php",
+                dataType: "json",
+                data: "pid=" + selectedProject + "&dev_id=" + cookdev + "&filter=" + selectedFilterOpton + "&region=" + selectedRegion + "&fromYear=" + selectedFromYear + "&toYear=" + selectedToYear + "&chart=cal",
+                success: function(res) {
+                    console.log(res);
+                    if (res.response == 1) {
+                        //Remove the response code - will affect graph construction
+                        delete res.response;
+                        //Copy data results to _dataObj, will provide data to graph
+                        _dataObj = res;
+                        //Convert date to array of years and find the max and min year - needed to set calendar year range
+                        var yearArray = [];
+                        for (date in _dataObj) {
+                            yearArray.push(parseInt(date.split("-")[0]));
+                        }
+                        var maxYear = Math.max.apply(Math, yearArray);
+                        var minYear = Math.min.apply(Math, yearArray);
+                        d3.select("#calendarChart").selectAll("svg").remove();
+                        buildCalendarChart(minYear, maxYear);
+                    } else if (res.response == -1) {
+                        alert(res.message);
+                    }
+                },
+                error: function(err) {
+                    alert("ERR : " + JSON.stringify(err));
+                }
+            });
+        };
+        /*
+          Takes the selected project, filter option(sign up or daily user), start and end date
+          Performs a query on the database based on those options and returns data that will be used to construct the
+          Bar graph. No region filter option is avaible since it is showing a comparison by region
+        */
+        function doQueryBarChart() {
+            var project_idDDL = document.getElementById("project_id");
+            var selectedProject = project_idDDL.options[project_idDDL.selectedIndex].value;
+            if (!selectedProject) return Materialize.toast('Please select a project to query', 4000);
+            var filterOptionDDL = document.getElementById("barchart_filterBy");
+            var selectedFilterOption = filterOptionDDL.options[filterOptionDDL.selectedIndex].value;
+            if (_fromDate == "" || _toDate == "") return Materialize.toast('Please select a date range to query', 4000);
+            $.ajax({
+                type: "POST",
+                url: "../php/db_Analytics.php",
+                dataType: "json",
+                data: "pid=" + selectedProject + "&dev_id=" + cookdev + "&filter=" + selectedFilterOption + "&fromYear=" + _fromDate + ' 0:0:0.000000' + "&toYear=" + _toDate + ' 23:59:59.999999' + "&chart=bar",
+                success: function(res) {
+                    if (res.response == 1) {
+                        delete res.response;
+                        var jsonArray = [];
+                        //Convert object into array of objects - Bar chart format expects an array
+                        for (key in res) {
+                            jsonArray.push({
+                                "total": res[key],
+                                "country": key.substring(0, 5) //Only first 5 letters of region
+                            });
+                        }
+                        d3.select("#barChartRegion").selectAll("svg").remove();
+                        buildBarChartRegion(jsonArray);
+                    } else if (res.response == -1) {
+                        alert(res.message);
+                    }
+                },
+                error: function(err) {
+                    alert("ERR : " + JSON.stringify(err));
+                }
+            });
+        }
+        /*
+          Constructs the Calendar chart layout and assign data that was returned from query
+        */
+        function buildCalendarChart(minYear, maxYear) {
+            var width = 960,
+                height = 750,
+                cellSize = 25; // cell size
+
+            var no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50));
+            var shift_up = cellSize * 3;
+
+            var day = d3.time.format("%w"), // day of the week
+                day_of_month = d3.time.format("%e") // day of the month
+            day_of_year = d3.time.format("%j")
+            week = d3.time.format("%U"), // week number of the year
+                month = d3.time.format("%m"), // month number
+                year = d3.time.format("%Y"),
+                total = d3.format(".1%"),
+                format = d3.time.format("%Y-%m-%d");
+
+            var color = d3.scale.quantize()
+                .domain([0, 100]) //input domain is the list of possible data values
+                .range(d3.range(11).map(function(d) {
+                    return "q" + d + "-11";
+                })); //list of all possible output displays - normally in pixels but an rgb fill colour is applied
+            /*The input value is normalized according to the domain, and then the normalized value is scaled to the output range.*/
+            var svg = d3.select("#calendarChart").selectAll("svg")
+                .data(d3.range(minYear, maxYear + 1))
+                .enter().append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("class", "RdYlGn")
+                .append("g")
+
+            var rect = svg.selectAll(".day")
+                .data(function(d) {
+                    return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1));
+                })
+                .enter().append("rect")
+                .attr("class", "day")
+                .attr("width", cellSize)
+                .attr("height", cellSize)
+                .attr("x", function(d) {
+                    var month_padding = 1.2 * cellSize * 7 * ((month(d) - 1) % (no_months_in_a_row));
+                    return day(d) * cellSize + month_padding;
+                })
+                .attr("y", function(d) {
+                    var week_diff = week(d) - week(new Date(year(d), month(d) - 1, 1));
+                    var row_level = Math.ceil(month(d) / (no_months_in_a_row));
+                    return (week_diff * cellSize) + row_level * cellSize * 8 - cellSize / 2 - shift_up;
+                })
+                .datum(format);
+
+            var month_titles = svg.selectAll(".month-title")
+                .data(function(d) {
+                    return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1));
+                })
+                .enter().append("text")
+                .text(monthTitle)
+                .attr("x", function(d, i) {
+                    var month_padding = 1.2 * cellSize * 7 * ((month(d) - 1) % (no_months_in_a_row));
+                    return month_padding;
+                })
+                .attr("y", function(d, i) {
+                    var week_diff = week(d) - week(new Date(year(d), month(d) - 1, 1));
+                    var row_level = Math.ceil(month(d) / (no_months_in_a_row));
+                    return (week_diff * cellSize) + row_level * cellSize * 8 - cellSize - shift_up;
+                })
+                .attr("class", "month-title")
+                .attr("d", monthTitle);
+
+            var year_titles = svg.selectAll(".year-title")
+                .data(function(d) {
+                    return d3.time.years(new Date(d, 0, 1), new Date(d + 1, 0, 1));
+                })
+                .enter().append("text")
+                .text(yearTitle)
+                .attr("x", function(d, i) {
+                    return width / 2 - 100;
+                })
+                .attr("y", function(d, i) {
+                    return cellSize * 5.5 - shift_up;
+                })
+                .attr("class", "year-title")
+                .attr("d", yearTitle);
+
+            //Tooltip Object - shows on hover for a data point on calendar
+            var tooltip = d3.select("body")
+                .append("div").attr("id", "tooltip")
+                .style("position", "absolute")
+                .style("z-index", "10")
+                .style("visibility", "hidden")
+                .text("a simple tooltip");
+            //Applies colour code based off input value
+            rect.filter(function(d) {
+                    return d in _dataObj;
+                })
+                .attr("class", function(d) {
+                    return "day " + color(_dataObj[d]);
+                })
+                .select("title")
+                .text(function(d) {
+                    return d + ": " + total(_dataObj[d]);
+                });
+
+            rect.on("mouseover", mouseover);
+            rect.on("mouseout", mouseout);
+
+            function mouseover(d) {
+                tooltip.style("visibility", "visible");
+                var total_data = (_dataObj[d] !== undefined) ? _dataObj[d] : 0;
+                var text = d + ": " + total_data;
+
+                tooltip.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                tooltip.html(text)
+                    .style("left", (d3.event.pageX) + 30 + "px")
+                    .style("top", (d3.event.pageY) + "px");
+            }
+
+            function mouseout(d) {
+                tooltip.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+                var $tooltip = $("#tooltip");
+                $tooltip.empty();
+            }
+
+            function dayTitle(t0) {
+                return t0.toString().split(" ")[2];
+            }
+
+            function monthTitle(t0) {
+                return t0.toLocaleString("en-us", {
+                    month: "long"
+                });
+            }
+
+            function yearTitle(t0) {
+                return t0.toString().split(" ")[3];
+            }
+        }
+        /*
+          Constructs the Bar chart layout and assign data that was returned from query
+        */
+        function buildBarChartRegion(regionData) {
+            var margin = {
+                    top: 20,
+                    right: 20,
+                    bottom: 30,
+                    left: 40
+                },
+                width = 1200 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+            var x = d3.scale.ordinal()
+                .rangeRoundBands([0, width], .1);
+
+            var y = d3.scale.linear()
+                .range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .tickFormat(d3.format("d")); //Integer values - d3 will show decimal point by default
+            //Tool tip
+            var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {
+                    return "<strong>Total:</strong> <span style='color:red'>" + d.total + "</span>";
+                })
+
+            var svg = d3.select("#barChartRegion").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            svg.call(tip);
+            //Assign Data
+            data = regionData;
+
+            x.domain(data.map(function(d) {
+                return d.country;
+            }));
+            y.domain([0, d3.max(data, function(d) {
+                return d.total;
+            })]);
+            //Add X axis
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+            //Add Y axis
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Total");
+            //Apply data to all elements in chart
+            svg.selectAll(".bar")
+                .data(data)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d) {
+                    return x(d.country);
+                })
+                .attr("width", x.rangeBand())
+                .attr("y", function(d) {
+                    return y(d.total);
+                })
+                .attr("height", function(d) {
+                    return height - y(d.total);
+                })
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide)
+
+            function type(d) {
+                d.total = +d.total;
+                return d;
+            }
+        }
+        /*
+          Method used to create a cookie - expiration date is optional
+        */
+        var createCookie = function(name, value, days) {
+                var expires;
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toGMTString();
+                } else {
+                    expires = "";
+                }
+                document.cookie = name + "=" + value + expires + "; path=/";
+            }
+        /*
+          Method used to retrieve the cookie
+        */
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end == -1) {
+                        c_end = document.cookie.length;
+                    }
+                    return unescape(document.cookie.substring(c_start, c_end));
+                }
+            }
+            return "";
+        }
+        /*
+          Method to delete cookie - overwrite the cookie value to empty and set expiration date to yesterday
+        */
+        function deleteCookie(name) {
+            createCookie(name, "", -1);
+        }
+        /*
+          expires user email and dev_id in the cookie when they log out
+        */
+        function logout() {
+            //Expire it
+            deleteCookie("email");
+            deleteCookie("dev_id");
+            window.location = "../index.html";
+        }
+    </script>
+</body>
+
+</html>

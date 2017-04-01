@@ -1,0 +1,229 @@
+<html>
+
+<head>
+    <title>Keys</title>
+
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link type="text/css" rel="stylesheet" href="../css/styles.css" />
+</head>
+
+<body>
+    <!--Load Jquery - if not able to get from CDN then load it locally-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script>
+        !window.jQuery && document.write('<script src="../libs/jquery/jquery-2.1.1.min.js"><\/script>')
+    </script>
+    <!--Load Materialize-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
+    <script>
+        !window.Materialize && document.write('<script src="../libs/materialize/dist/js/materialize.min.js"><\/script>')
+    </script>
+
+    <!--Main Nav Bar-->
+    <nav class="lime amber accent-4">
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo"><img src="../images/main_nav_icon.png" class="img-circle-sm"></img>
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li>
+                    <a class="dropdown-button btn blue darken-3" href="#" data-activates="userOptions">
+                        <div id="userName">Welcome User</div>
+                    </a>
+                </li>
+                <li><a href="main.html">Home</a></li>
+                <li><a href="projects.html"><i class="material-icons right">work</i>Projects</a></li>
+                <li class="active"><a href="keys.html"><i class="material-icons right">vpn_key</i>API Keys</a></li>
+                <li><a href="analytics.html"><i class="material-icons right">insert_chart</i>Analytics</a></li>
+            </ul>
+
+            <ul id="userOptions" class="dropdown-content">
+                <li><a href="#!">Edit Account</a></li>
+                <li class="divider"></li>
+                <li><a type="button" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="enableAPIModal" class="modal">
+        <div class="modal-content">
+            <form class="col s12 m6 offset-m3" id="token_form" name="token_form" onsubmit="return false">
+                <div class="row">
+                    <div class="input-field col s4">
+                        <input id="dev_id" name="dev_id" type="text" disabled="">
+                    </div>
+                    <div class="input-field col s8">
+                        <input id="email" name="email" type="text" disabled="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="project_name" name="project_name" type="text" class="validate" required="">
+                        <label for="project_name" data-error="project name too short">Project Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="descript" name="descript" type="text">
+                        <label for="descript">Description</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class=" modal-action waves-effect waves-green btn-flat" onclick="registerProject()" form="token_form">Done</button>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:1%">
+        <div class="col s12 m10 offset-m1">
+            <table id="key_table">
+                <thead>
+                    <tr>
+                        <th data-field="id">Project ID</th>
+                        <th data-field="id">Token</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <!-- Add Table cells programmatically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+        <a class="btn-floating btn-large red" onclick="enableProject()">
+            <i class="material-icons">add</i>
+        </a>
+    </div>
+    <script>
+        //Get the dev_id and email from the cookie
+        var cookemail = getCookie("email");
+        var cookdev = getCookie("dev_id");
+        var uname = document.getElementById("userName");
+        uname.innerHTML = "Welcome " + cookemail;
+        /*
+          Get all the user api keys and add them to the table
+        */
+        (function() {
+            var key_table = document.getElementById("key_table").getElementsByTagName('tbody')[0];
+            $.ajax({
+                type: "POST",
+                url: "../php/db_GetApiKeys.php",
+                dataType: "json",
+                data: "dev_id=" + cookdev,
+                success: function(res) {
+                    if (res[0].response == 1) {
+                        for (var n = 0; n < res.length; n++) {
+                            var row = key_table.insertRow(n);
+                            var cell_pid = row.insertCell(0);
+                            cell_pid.innerHTML = res[n].pid;
+                            var cell_name = row.insertCell(1);
+                            cell_name.innerHTML = res[n].token;
+                        }
+                    } else if (res[0].response == -1) {
+                        alert(res[0].message);
+                    }
+                },
+                error: function(err) {
+                    alert("ERR: " + JSON.stringify(err));
+                }
+            });
+        }());
+        /*
+          Opens a modal box when the user selects add project
+          It retrieves the user email and dev_id from the cookie and displays it in the modal
+        */
+        function enableProject() {
+            var email = document.getElementById("email");
+            var dev_id = document.getElementById("dev_id");
+            $("#enableAPIModal").openModal();
+            email.value = cookemail;
+            dev_id.value = "Developer ID : " + cookdev;
+        }
+        /*
+          Stores project information to database and closes the modal box
+        */
+        function registerProject() {
+            var project_name = document.getElementById("project_name");
+            var descript = document.getElementById("descript");
+            if (project_name.value == "" || descript.value == "") {
+                Materialize.toast('Project name or description cannot be empty', 6000);
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: "../php/db_RegisterProject.php",
+                    dataType: "json",
+                    data: "dev_id=" + cookdev + "&descript=" + descript.value + "&project_name=" + project_name.value,
+                    success: function(res) {
+                        if (res.response == 1) {
+                            Materialize.toast('API registration SUCCESSFUL', 6000);
+                        } else if (res.response == 0) {
+                            Materialize.toast('API registration FAILED', 6000);
+                        } else if (res.response == -1) {
+                            alert(res.message);
+                        }
+                        $("#enableAPIModal").closeModal();
+                    },
+                    error: function(err) {
+                        alert("ERR: " + JSON.stringify(err));
+                        Materialize.toast('API registration FAILED', 6000);
+                        $("#enableAPIModal").closeModal();
+                    }
+                });
+            }
+        }
+        /*
+          Method used to create a cookie - expiration date is optional
+        */
+        var createCookie = function(name, value, days) {
+                var expires;
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toGMTString();
+                } else {
+                    expires = "";
+                }
+                document.cookie = name + "=" + value + expires + "; path=/";
+            }
+        /*
+          Method used to retrieve the cookie
+        */
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start != -1) {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end == -1) {
+                        c_end = document.cookie.length;
+                    }
+                    return unescape(document.cookie.substring(c_start, c_end));
+                }
+            }
+            return "";
+        }
+        /*
+          Method to delete cookie - overwrite the cookie value to empty and set expiration date to yesterday
+        */
+        function deleteCookie(name) {
+            createCookie(name, "", -1);
+        }
+        /*
+          expires user email and dev_id in the cookie when they log out
+        */
+        function logout() {
+            //Expire it
+            deleteCookie("email");
+            deleteCookie("dev_id");
+            window.location = "../index.html";
+        }
+    </script>
+</body>
+
+</html>
