@@ -49,10 +49,12 @@
                 <li><a href="views/store.html"><i class="material-icons">redeem</i>Go to Store</a></li>
                 <li><a href="views/refer"><i class="material-icons">shop_two</i>Refer a Friend</a></li>
             </ul>
-            <a href="#" data-activates="slide-out" class="button-collapse"><i class="medium material-icons grey-text text-lighten-2">menu</i></a>
+            <a href="#" data-activates="slide-out" class="button-collapse"><i class="medium material-icons grey-text text-lighten-4">menu</i></a>
         </div>
         <div class="col s2 m4 offset-s2">
-            <h4><font color="#e6bb12">2000</font></h4>
+            <h4>
+                <font color="#e6bb12">2000</font>
+            </h4>
         </div>
         <div class="col s2 m4">
             <img src="images/coin.png" height="10%" width="100%" />
@@ -60,16 +62,45 @@
     </div>
     <div class="row">
         <div class="col s12 m4 offset-m1">
-
             <svg id="fillgauge1" width="97%" height="250" onclick="gauge1.update(NewValue());"></svg>
-            <svg id="fillgauge2" width="19%" height="200" onclick="gauge2.update(NewValue());"></svg>
-            <svg id="fillgauge3" width="19%" height="200" onclick="gauge3.update(NewValue());"></svg>
-            <svg id="fillgauge4" width="19%" height="200" onclick="gauge4.update(NewValue());"></svg>
-            <svg id="fillgauge5" width="19%" height="200" onclick="gauge5.update(NewValue());"></svg>
-            <svg id="fillgauge6" width="19%" height="200" onclick="gauge6.update(NewValue());"></svg>
+            <div class="row">
+                <div class="col s12 offset-s3">
+                    <p style="margin-bottom:-35%; padding-left:15%">
+                        <font color="#f5f5f5">Target</font>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s4 m4">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <svg id="fillgauge2" width="70%" height="300" onclick="gauge2.update(NewValue());"></svg>
+                    <p style="margin-top: -100%; padding-left:35%">
+                        <font color="#f5f5f5">Calories</font>
+                    </p>
+                </div>
+                <div class="col s4 m4">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <svg id="fillgauge4" width="70%" height="300" onclick="gauge4.update(NewValue());"></svg>
+                    <p style="margin-top: -100%; padding-left:25%">
+                        <font color="#f5f5f5">Distance</font>
+                    </p>
+                </div>
+                <div class="col s4 m4">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <svg id="fillgauge6" width="70%" height="300" onclick="gauge6.update(NewValue());"></svg>
+                    <p style="margin-top: -100%; padding-left:30%">
+                        <font color="#f5f5f5">Steps</font>
+                    </p>
+                </div>
+            </div>
+            <svg id="fillgauge3" width="0%" height="0" onclick="gauge3.update(NewValue());"></svg>
+            <svg id="fillgauge5" width="0%" height="0" onclick="gauge5.update(NewValue());"></svg>
         </div>
     </div>
     <script>
+        // $(document).ready(function(){
+        //     $("#fillgauge3").hide();
+        // });
         $(".button-collapse").sideNav();
 
         (function () {
