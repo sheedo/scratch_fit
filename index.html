@@ -33,7 +33,7 @@
     <script src="http://d3js.org/d3.v3.min.js" language="JavaScript"></script>
     <script src="libs/liquidFillGauge.js" language="JavaScript"></script>
     <div class="row">
-        <div class="col s12 m6 offset-m1" style="margin-top:2%">
+        <div class="col s6 m4 offset-m1">
             <ul id="slide-out" class="side-nav">
                 <li>
                     <div class="userView">
@@ -48,14 +48,19 @@
                 <li><a href="views/set_target.html"><i class="material-icons">my_location</i>Set Target</a></li>
                 <li><a href="#!"><i class="material-icons">redeem</i>Claim Ticket</a></li>
                 <li><a href="#!"><i class="material-icons">shop_two</i>Refer a Friend</a></li>
-                <!--<li><a href="#!">Second Link</a></li>
-                <li>
-                    <div class="divider"></div>
-                </li>
-                <li><a class="subheader">Subheader</a></li>
-                <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>-->
             </ul>
             <a href="#" data-activates="slide-out" class="button-collapse"><i class="medium material-icons">menu</i></a>
+        </div>
+        <div class="col s2 m4 offset-s2">
+            <h4><font color="#e6bb12">2000</font></h4>
+        </div>
+        <div class="col s2 m4">
+            <img src="images/coin.png" height="10%" width="100%" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m4 offset-m1">
+
             <svg id="fillgauge1" width="97%" height="250" onclick="gauge1.update(NewValue());"></svg>
             <svg id="fillgauge2" width="19%" height="200" onclick="gauge2.update(NewValue());"></svg>
             <svg id="fillgauge3" width="19%" height="200" onclick="gauge3.update(NewValue());"></svg>
